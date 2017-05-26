@@ -22,23 +22,17 @@ Our first benchmark is an _embarassingly parallel_ problem: we try to paralleliz
 TODO: pic
 In Haskell and Erlang we split the list of data points up into chunks, and compute the nearest centers for each chunk in parallel. In Java, we simply invoke the `map` method on a parallel stream of the data points. Internally, this will process the stream in a similar strategy as our implementations of the other languages. [[2]](https://docs.oracle.com/javase/tutorial/collections/streams/parallelism.html#executing_streams_in_parallel)
 
-### Results
-TODO
-
 ## Benchmark II: Parallel Sorting
 The next benchmark we will consider is the (in our opinion) most idiomatic implementation of a parallel, functional, generic sorting algorithm in each of the languages. As a baseline we compare this to an idiomatic sequential sorting algorithm.
 For Haskell and Erlang, we implemented a basic mergesort algorithm, where at first both halves of the lists are recursively sorted in parallel, and then the two sorted sublists are merged sequentially. The granularity is controlled by a _cutoff_ parameter **k**: lists of length shorter than **k** are sorted by a sequential mergesort implementation. 
 For Java, we simply invoke the `sorted()` function of Java's (parallel) streams, which internally also operates using parallel mergesort with a _cutoff_ parameter, as it delegates to `Arrays.parallelSort()`[[3]](https://docs.oracle.com/javase/8/docs/api/java/util/Arrays.html#parallelSort-T:A-).
-
-### Results
-TODO
 
 ## Bonus Benchmark: Bitonic Sorting
 A somewhat more sophisticated parallel sorting algorithm is _bitonic mergesort_[[4]](). In this algorithm, not only the sorting, but also the merging step is parallelized, splitting up the linear time sequential work of the merge. As such, massively parallel architectures can get better speedups than on sequential mergesort. The downside is that the total number of operations is higher than in usual mergesort (although the asymptotic complexity is the same). The algorithm is studied in detail in the reference [[4]](http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm).
 TODO: pic
 We implemented this algorithm in Haskell and Erlang only. The reason is that we do not believe that it is possible to implement this algorithm elegantly using Java parallel streams. One could probably do achieve this more easily using another, non-functional concept of parallelism in Java, but this is outside the scope of this experiment.
 
-### Results
+## Results
 TODO
 
 ## Discussion
