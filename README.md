@@ -47,6 +47,7 @@ TODO
 
 ## Discussion
 TODO speeds, speedups
+
 During implementation, we found that working with Java was quite different from working with Haskell or Erlang. On the one hand, the parallel stream operations are very easy to use, and given this simplicity the speedups achieved wothout any further tweaking are impressive. On the other hand, it is harder to obtain a more finegrained control of parallelism - in a real life application, one might not want to throw all of a System's resources at each computation of a parallel stream. Further, Java is really missing some convenience functions for streams such as `zip` or `mapWithIndex` which e.g. made the kmeans `closest` implementation a bit more tedious than necessary. As streams and high level functional concepts are still a relatively new addition to Java, we believe that future improvenments could mitigate some of these issues.
 
 ## References
@@ -56,5 +57,7 @@ During implementation, we found that working with Java was quite different from 
 4. "Bitonic Sort" http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm
 
 Images were taken from:
+
 kmeans: https://www-m9.ma.tum.de/material/felix-klein/clustering/Methoden/kmeans_schlechte_anfangszentren.jpg
+
 bitonic sort: http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm
