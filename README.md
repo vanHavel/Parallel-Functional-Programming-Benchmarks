@@ -38,7 +38,7 @@ For Java, we simply invoke the `sorted()` function of Java's (parallel) streams,
 ## Bonus Benchmark: Bitonic Sorting
 A somewhat more sophisticated parallel sorting algorithm is _bitonic mergesort_[[4]](). In this algorithm, not only the sorting, but also the merging step is parallelized, splitting up the linear time sequential work of the merge. As such, massively parallel architectures can get better speedups than on sequential mergesort. The downside is that the total number of operations is higher than in usual mergesort (although the asymptotic complexity is the same). The algorithm is studied in detail in the reference [[4]](http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm).
 
-TODO: pic
+![bitonic](https://github.com/vanHavel/Parallel-Functional-Programming-Benchmarks/blob/master/binetzen.gif)
 
 We implemented this algorithm in Haskell and Erlang only. The reason is that we do not believe that it is possible to implement this algorithm elegantly using Java parallel streams. One could probably do achieve this more easily using another, non-functional concept of parallelism in Java, but this is outside the scope of this experiment.
 
