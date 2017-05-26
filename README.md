@@ -2,7 +2,7 @@
 Language Comparison on absolute speeds and relative speedups.
 
 ## Introduction
-In this project we compare the functional programming languages Haskell, Erlang and Java 8 in terms of performance on parallel computations.
+In this project we compare the functional programming languages Haskell, Erlang and Java 8 in terms of performance on parallel computations. All implementations are available in this repository.
 
 Our goal is to compare both raw speeds as well as **speedup** (scaling factor compared to a sequential solution) of all languages involved. Depending on the environment, the latter one might be even more important than the first, as machines with many cores need excellent scalability to yield good performance.
 
@@ -43,7 +43,20 @@ A somewhat more sophisticated parallel sorting algorithm is _bitonic mergesort_[
 We implemented this algorithm in Haskell and Erlang only. The reason is that we do not believe that it is possible to implement this algorithm elegantly using Java parallel streams. One could probably do achieve this more easily using another, non-functional concept of parallelism in Java, but this is outside the scope of this experiment.
 
 ## Results
-TODO
+All times are the in given in miliseconds. The times are average runtimes of at least 10 executions for each parallel benchmark. The speedup is in relation to a baseline sequential version of the same algorithm.
+
+For the sorting problems, the task at hand was sorting **n** = 2^17 numbers. In the Haskell and Erlang implementations we used a chunksize of 2^12. 
+
+For the cluster assignment problem, we assigned **n** = 2^20 points to **k** = 10 different clusters. In Haskell and Erlang, the chosen chunksize was 2^15.
+
+. | Haskell | Erlang | Java
+---|---:|---:|---:
+Kmeans time | 996.2 | 1425.667 | 177.227
+Kmeans speedup | 1.062 | 4.843 | 2.147
+Mergesort time | 163.2 | 65.695 | 31.796
+Mergesort speedup | 2.409 | 1.668629 | 1.594
+Bitonic sort time | 1491 | 360.185 | N.A.
+Bitonic sort speedup | 1.635 | 4.734 | N.A.
 
 ## Discussion
 TODO speeds, speedups
