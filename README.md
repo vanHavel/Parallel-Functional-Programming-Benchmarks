@@ -14,7 +14,10 @@ The languages considered are Haskell, Erlang and Java. Now, each of these langua
 * In Erlang there is really only one notion of parallelism: processes. But these can be run on the same node or on different nodes. As we benchmark parallel computations on a single machine, we only make use of intra-node parallelism. Of course one of the biggest advantages of Erlang is that it was built to scale for distributed computations, but that is not the point of this experiment.
 * Finally, we use parallel streams for parallelism in Java (and sequential streams as a baseline). We limit ourselves to streams, as they are the only way to write idiomatic, parallel, functional code in Java. In particular we ignore all parallelism means using threads or likewise constructs.
 
-## Cluster Assignment
+## The Testing Environment
+The experiments were conducted on a 2016 MacBookPro with 8GB RAM running OS X 10.12.4. The processor is a dual-core Intel i5-6360U with 2.9 GHz and hyper-threading (4 threads).
+
+## Benchmark I: Cluster Assignment
 Our first benchmark is an _embarassingly parallel_ problem: we try to parallelize a simple map function. In particular, we take a look at the **cluster assignment** step of the popular **k-means** clustering algorithm. The concept is simple: we are given a set of **n** points in a plane, and a set of **k** _cluster centres_ (**k** << **n**), and we simply assign each point to its nearest center. 
 TODO: pic
 In Haskell and Erlang we split the list of data points up into chunks, and compute the nearest centers for each chunk in parallel. In Java, we simply invoke the `map` method on a parallel stream of the data points. Internally, this will process the stream in a similar strategy as our implementations of the other languages. [[2]](https://docs.oracle.com/javase/tutorial/collections/streams/parallelism.html#executing_streams_in_parallel)
@@ -22,7 +25,7 @@ In Haskell and Erlang we split the list of data points up into chunks, and compu
 ### Results
 TODO
 
-## Parallel Sorting
+## Benchmark II: Parallel Sorting
 The next benchmark we will consider is the (in our opinion) most idiomatic implementation of a parallel, functional, generic sorting algorithm in each of the languages. As a baseline we compare this to an idiomatic sequential sorting algorithm.
 For Haskell and Erlang, we implemented a basic mergesort algorithm, where at first both halves of the lists are recursively sorted in parallel, and then the two sorted sublists are merged sequentially. The granularity is controlled by a _cutoff_ parameter **k**: lists of length shorter than **k** are sorted by a sequential mergesort implementation. 
 For Java, we simply invoke the `sorted()` function of Java's (parallel) streams, which internally also operates using parallel mergesort with a _cutoff_ parameter, as it delegates to `Arrays.parallelSort()`[[3]](https://docs.oracle.com/javase/8/docs/api/java/util/Arrays.html#parallelSort-T:A-).
@@ -30,15 +33,20 @@ For Java, we simply invoke the `sorted()` function of Java's (parallel) streams,
 ### Results
 TODO
 
-## Bitonic Sorting
-TODO
+## Bonus Benchmark: Bitonic Sorting
+A somewhat more sophisticated parallel sorting algorithm is _bitonic mergesort_[[4]](). In this algorithm, not only the sorting, but also the merging step is parallelized, splitting up the linear time sequential work of the merge. As such, massively parallel architectures can get better speedups than on sequential mergesort. The downside is that the total number of operations is higher than in usual mergesort (although the asymptotic complexity is the same). The algorithm is studied in detail in the reference [[4]](http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm).
+TODO: pic
+We implemented this algorithm in Haskell and Erlang only. The reason is that we do not believe that it is possible to implement this algorithm elegantly using Java parallel streams. One could probably do achieve this more easily using another, non-functional concept of parallelism in Java, but this is outside the scope of this experiment.
 
 ### Results
 TODO
 
 ## Discussion
+TODO speeds, speedups
+During implementation, we found that working with Java was quite different from working with Haskell or Erlang. On the one hand, the parallel stream operations are very easy to use, and given this simplicity the speedups achieved wothout any further tweaking are impressive. On the other hand, it is harder to obtain a more finegrained control of parallelism - in a real life application, one might not want to throw all of a System's resources at each computation of a parallel stream. Further, Java is really missing some convenience functions for streams such as `zip` or `mapWithIndex` which e.g. made the kmeans `closest` implementation a bit more tedious than necessary. As streams and high level functional concepts are still a relatively new addition to Java, we believe that future improvenments could mitigate some of these issues.
 
 ## References
 1. Marlow, Simon, Ryan Newton, and Simon Peyton Jones. "A monad for deterministic parallelism." ACM SIGPLAN Notices. Vol. 46. No. 12. ACM, 2011.
 2. "Executing Streams in Parallel" https://docs.oracle.com/javase/tutorial/collections/streams/parallelism.html#executing_streams_in_parallel
 3. "Arrays (Java Platform SE 8)" https://docs.oracle.com/javase/8/docs/api/java/util/Arrays.html#parallelSort-T:A-
+4. "Bitonic Sort" http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm
