@@ -59,7 +59,13 @@ Bitonic sort time | 1491 | 360.185 | N.A.
 Bitonic sort speedup | 1.635 | 4.734 | N.A.
 
 ## Discussion
-TODO speeds, speedups
+Concerning raw speed, we have a clear winner: Java greatly outperforms both Haskell and Erlang on the kmeans example by being more than 5 times as fast, and is still twice as fast as Erlang in the sorting task. 
+
+Haskell seems to have quite a few problems with spending too much time on garbage collection. By playing around with the runtime flags a bit and assigning a large nursery size of 100MB to each HEC, the Haskell programs run 1.5-2 times as fast, but still do not come close to the Erlang performance of sorting. For some reason the kmeans example runs somewhat faster in Haskell than in Erlang. However, all in all the performance of the only compiled language in this comparison is somewhat disappointing.
+
+Concerning speedup / scalability, Erlang seems to be the winner in the competition. In two tasks it achieves greater than quadruple speedup, which is impressive given the test machine's processor. Erlang undermines its claim of having chosen "the right concurrency model". In the simple mergesort the speedup is not quite as good as Haskells Par monad, but still better than Java. 
+
+Haskell speedups show mixed results: from almost no gain in kmeans to a unexpectedly great performance on parallel mergesort. This somewhat coincides with our previous experience of writing parallel Haskell: achieving speedups is tricky and rarely works "out of the box". 
 
 During implementation, we found that working with Java was quite different from working with Haskell or Erlang. On the one hand, the parallel stream operations are very easy to use, and given this simplicity the speedups achieved wothout any further tweaking are impressive. On the other hand, it is harder to obtain a more finegrained control of parallelism - in a real life application, one might not want to throw all of a System's resources at each computation of a parallel stream. Further, Java is really missing some convenience functions for streams such as `zip` or `mapWithIndex` which e.g. made the kmeans `closest` implementation a bit more tedious than necessary. As streams and high level functional concepts are still a relatively new addition to Java, we believe that future improvenments could mitigate some of these issues.
 
